@@ -64,6 +64,20 @@ func NewSrvLog() *SrvLog {
 	return obj
 }
 
+// NewNullSrvLog returns a new instance of a SrvLog object that doesn't actually log anything. It can be used when a
+// function is expecting a SrvLog interface but you don't actually want it to produce any output.
+func NewNullSrvLog() *SrvLog {
+	obj := &SrvLog{
+		subs:   make(map[string]*LogService),
+		fields: make(map[string]interface{}),
+	}
+	logNull := log.NewLogBuffer(1)
+	obj.AddLog("debug", logNull)
+	obj.AddLog("error", logNull)
+	obj.AddLog("info", logNull)
+	return obj
+}
+
 // AddLog
 func (this *SrvLog) AddLog(name string, newLog log.LogNotify) {
 	this.lock.Lock()
